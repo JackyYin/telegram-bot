@@ -7,7 +7,7 @@ RUN yarn install \
     && yarn cache clean
 
 FROM builder as app
-ARG PORT=3001
+ARG PORT=3000
 COPY . .
 EXPOSE $PORT
 CMD [ "yarn", "start" ]

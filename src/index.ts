@@ -9,7 +9,7 @@ const fs = require('fs');
 const ngrok = require('ngrok');
 
  // public URL
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 const TOKEN = process.env.TELEGRAM_TOKEN;
 const API_PREFIX = `https://api.telegram.org/bot${TOKEN}`;
 const bot = new TelegramBot(TOKEN);
