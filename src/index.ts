@@ -1,6 +1,8 @@
-const TelegramBot = require('node-telegram-bot-api');;
-const express = require('express');
-const bodyParser = require('body-parser');
+import * as Koa from 'koa';
+import * as Router from 'koa-router';
+import * as bodyParser from 'koa-bodyparser';
+import * as logger from 'koa-logger';
+const TelegramBot = require('node-telegram-bot-api');
 const rp = require('request-promise');
 const md5 = require('md5');
 const urlencode = require('urlencode');
@@ -8,23 +10,35 @@ const ytdl = require('ytdl-core');
 const fs = require('fs');
 const ngrok = require('ngrok');
 
- // public URL
 const port = process.env.PORT || 3000;
 const TOKEN = process.env.TELEGRAM_TOKEN;
 const API_PREFIX = `https://api.telegram.org/bot${TOKEN}`;
 const bot = new TelegramBot(TOKEN);
 
-const app = express();
+const app = new Koa();
 
-app.use(bodyParser.json());
+declare module 'koa' {
+  interface Request {
+    body?: any;
+    rawBody: string;
+  }
+}
 
-app.post('/hook', (req, res) => {
-    bot.processUpdate(req.body);
-    res.sendStatus(200);
+app.use(logger());
+app.use(bodyParser());
+
+const router = new Router();
+
+router.post('/hook', (ctx: Router.RouterContext, next: Function) => {
+  bot.processUpdate(ctx.request.body);
+  ctx.status = 200;
 });
 
+app.use(router.routes());
+app.use(router.allowedMethods());
+
 app.listen(port, () => {
-    console.log(`Express server is listening on ${port}`);
+    console.log(`Koa server is listening on ${port}`);
 });
 
 ngrok.connect(port).then(url => {
@@ -86,8 +100,7 @@ bot.on('sticker', async msg => {
 
 bot.on('message', async msg => {
   let chatId = msg.chat.id;
-  console.log(msg);
-  
+
   if (msg.animation) {
     rp({
       method: 'POST',
