@@ -3,6 +3,7 @@ version: '3.5'
 services:
   app:
     build: .
+    command: 'yarn start:dev'
     restart: always
     env_file:
       - .env
