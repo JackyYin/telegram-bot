@@ -3,8 +3,7 @@ WORKDIR /usr/app/src
 
 COPY package.json ./
 
-RUN yarn global add nodemon \
-    && yarn install \
+RUN yarn install \
     && yarn cache clean
 
 FROM builder as app
