@@ -1,4 +1,4 @@
-# telegram-bot - A Koa Relay Server :flag_tw:
+# telegram-bot - A Koa Relay Server
 
 ## Usage:
 
